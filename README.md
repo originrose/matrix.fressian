@@ -14,8 +14,8 @@ Adds Fressian support to core.matrix when using vectorz.
     ; Read it back in
     (read-array "foo.mat")
 
-Both write-array and read-array create an <output|input>-stream with their first
-argument, which can be a File, URL, URI, Socket, or String.
+Note, both write-array and read-array create an output-stream or input-stream with 
+their first argument, which can be a File, URL, URI, Socket, or String.
 
 
 ## Adding more implementations
