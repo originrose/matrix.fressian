@@ -1,7 +1,7 @@
 # clojure.core.matrix.fressian
 
-Adds Fressian support to core.matrix when using vectorz.
-
+Adds Fressian read/write handler support for writing data that includes
+core.matrix arrays.
 
     (require '[clojure.core.matrix :as mat])
     (require '[clojure.core.matrix.fressian :refer (write-array read-array)])
@@ -9,22 +9,24 @@ Adds Fressian support to core.matrix when using vectorz.
     (mat/set-current-implementation :vectorz)
 
     ; Write an array out to a file
-    (write-array "foo.mat" (mat/array [[1 2] [3 4]]))
+    ; To keep this library implementation independent, you need to pass the
+    ; (base) class of the matrix type you are using so Fressian knows to use
+    ; the correct write handler.
+    (write-data "foo.mat" {:src :seti
+                           :timestamp (new java.util.Date)
+                           :data (mat/array [[1 2] [3 4]])}
+                 mikera.arrayz.impl.AbstractArray)
 
     ; Read it back in
-    (read-array "foo.mat")
+    (read-data "foo.mat")
 
-Both write-array and read-array create an <output|input>-stream with their first
+Both write-data and read-data create an <output|input>-stream with their first
 argument, which can be a File, URL, URI, Socket, or String.
 
-
-## Adding more implementations
-
-This only works with vectorz because we need to know a base class of each
-implementation in order to integrate with the fressian reader/writer handler system.
-With almost no work it could be extended to support additional implementations.
+NOTE: This currently writes arrays as a dense sequence of doubles, so sparse
+matrices will probably not work correctly.
 
 The binary format is the same for all arrays:
 - tag
 - [shape vector]
-- [doubles...]
+- [sequence of doubles...]

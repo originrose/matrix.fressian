@@ -5,5 +5,6 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [net.mikera/core.matrix "0.32.1"]
-                 [net.mikera/vectorz-clj "0.28.0"]
-                 [org.clojure/data.fressian "0.2.0"]])
+                 [org.clojure/data.fressian "0.2.0"]]
+
+  :profiles {:dev {:dependencies [[net.mikera/vectorz-clj "0.28.0"]]}})

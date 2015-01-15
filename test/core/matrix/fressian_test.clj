@@ -4,10 +4,13 @@
             [clojure.core.matrix.fressian :refer :all])
   (:import [java.io ByteArrayOutputStream ByteArrayInputStream]))
 
+(mat/set-current-implementation :vectorz)
+
 (deftest a-test
   (testing "Write array to bytes and read back."
     (let [os (ByteArrayOutputStream.)
-          array (mat/array [[1 2] [3 4]])]
-      (write-array os array)
-      (is (= array
-                 (read-array (ByteArrayInputStream. (.toByteArray os))))))))
+          data {:info "some info about the data"
+                :data (mat/array [[1 2] [3 4]])}]
+      (write-data os data mikera.arrayz.impl.AbstractArray)
+      (is (= data
+             (read-data (ByteArrayInputStream. (.toByteArray os))))))))

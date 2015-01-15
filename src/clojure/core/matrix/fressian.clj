@@ -4,8 +4,6 @@
             [clojure.java.io :refer (output-stream input-stream)])
   (:import [org.fressian.handlers WriteHandler ReadHandler ILookup]))
 
-(mat/set-current-implementation :vectorz)
-
 (def ARRAY-TAG "array")
 
 ;; tags the array and writes a shape header before all the values
@@ -33,30 +31,32 @@
             (recur (inc i))))
         (mat/reshape array shape)))))
 
-(def array-write-handlers
-  (-> (merge {mikera.arrayz.impl.AbstractArray {ARRAY-TAG array-writer}}
+(defn array-write-handlers
+  [c]
+  (-> (merge {c {ARRAY-TAG array-writer}}
              fress/clojure-write-handlers)
       fress/associative-lookup
       fress/inheritance-lookup))
 
-(def array-read-handlers
+(defn array-read-handlers
+  []
   (-> (merge {ARRAY-TAG array-reader} fress/clojure-read-handlers)
       fress/associative-lookup))
 
-(defn write-array
+(defn write-data
   "Writes the array to an output stream created with clojure.java.io/output-stream.
 
   A File, URI, URL, Socket, or String (for local path) will all work."
-  [x array]
+  [x data array-type]
   (with-open [os (output-stream x)]
-    (fress/write-object (fress/create-writer os :handlers array-write-handlers) array)))
+    (fress/write-object (fress/create-writer os :handlers (array-write-handlers array-type)) data)))
 
-(defn read-array
+(defn read-data
   "Reads an array from an input stream created with clojure.java.io/input-stream.
 
   A File, URI, URL, Socket, byte array, or String (local path) will all work."
   [x]
   (with-open [is (input-stream x)]
-    (fress/read-object (fress/create-reader is :handlers array-read-handlers))))
+    (fress/read-object (fress/create-reader is :handlers (array-read-handlers)))))
 
 
