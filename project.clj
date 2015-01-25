@@ -7,4 +7,7 @@
                  [net.mikera/core.matrix "0.32.1"]
                  [org.clojure/data.fressian "0.2.0"]]
 
-  :profiles {:dev {:dependencies [[net.mikera/vectorz-clj "0.28.0"]]}})
+  :profiles {:dev {:dependencies [[net.mikera/vectorz-clj "0.28.0"]]}}
+
+  :lein-release {:deploy-via :clojars}
+  )
