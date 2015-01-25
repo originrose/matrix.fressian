@@ -1,4 +1,4 @@
-(ns clojure.core.matrix.fressian
+(ns thinktopic.matrix.fressian
   (:require [clojure.core.matrix :as mat]
             [clojure.data.fressian :as fress]
             [clojure.java.io :refer (output-stream input-stream)])
@@ -49,7 +49,8 @@
   A File, URI, URL, Socket, or String (for local path) will all work."
   [x data array-type]
   (with-open [os (output-stream x)]
-    (fress/write-object (fress/create-writer os :handlers (array-write-handlers array-type)) data)))
+    (fress/write-object (fress/create-writer os :handlers (array-write-handlers array-type)) data))
+  data)
 
 (defn read-data
   "Reads an array from an input stream created with clojure.java.io/input-stream.
