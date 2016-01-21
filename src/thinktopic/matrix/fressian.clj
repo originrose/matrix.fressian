@@ -6,12 +6,17 @@
 
 (def ARRAY-TAG "array")
 
+
+(defn element-count-from-shape
+  [shape]
+  (apply * shape))
+
 ;; tags the array and writes a shape header before all the values
 (def array-writer
   (reify WriteHandler
     (write [_ writer array]
       (let [shape (mat/shape array)
-            size (apply + shape)]
+            size (element-count-from-shape shape)]
         ;; write the tag, shape vector, and values
         (.writeTag writer ARRAY-TAG (inc size))
         (.writeObject writer shape)
@@ -23,7 +28,7 @@
   (reify ReadHandler
     (read [_ reader tag component-count]  ;; see org.fressian.Reader
       (let [shape (vec (.readObject reader))
-            size (apply + shape)
+            size (element-count-from-shape shape)
             array (mat/zero-array [size])]
         (loop [i 0]
           (when (< i size)
@@ -59,5 +64,3 @@
   [x]
   (with-open [is (input-stream x)]
     (fress/read-object (fress/create-reader is :handlers (array-read-handlers)))))
-
-
