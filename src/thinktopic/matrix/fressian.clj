@@ -10,11 +10,14 @@
 (def array-writer
   (reify WriteHandler
     (write [_ writer array]
-      (let [shape (mat/shape array)
-            size (apply + shape)]
+      (let [shape (apply list (mat/shape array))
+            size (apply + shape)
+            dims (count shape)]
         ;; write the tag, shape vector, and values
-        (.writeTag writer ARRAY-TAG (inc size))
-        (.writeObject writer shape)
+        (.writeTag writer ARRAY-TAG (+ size 1))
+        (.writeObject writer dims)
+        (doseq [d shape]
+          (.writeLong writer d))
         (doseq [v (mat/eseq array)]
           (.writeDouble writer v))))))
 
@@ -22,11 +25,18 @@
 (def array-reader
   (reify ReadHandler
     (read [_ reader tag component-count]  ;; see org.fressian.Reader
-      (let [shape (vec (.readObject reader))
+      (println "array-reader: " tag component-count)
+      (let [dims (int (.readObject reader))
+            _ (println "dims: " dims)
+            shape (doall (for [i (range dims)]
+                           (int (.readObject reader))))
+            _ (println "shape: " shape)
             size (apply + shape)
+            _ (println "size: " size)
             array (mat/zero-array [size])]
         (loop [i 0]
           (when (< i size)
+            (println i)
             (mat/mset! array i (.readDouble reader))
             (recur (inc i))))
         (mat/reshape array shape)))))
@@ -40,8 +50,9 @@
 
 (defn array-read-handlers
   []
-  (-> (merge {ARRAY-TAG array-reader} fress/clojure-read-handlers)
-      fress/associative-lookup))
+  (fress/associative-lookup
+    (merge fress/clojure-read-handlers
+           {ARRAY-TAG array-reader})))
 
 (defn write-data
   "Writes the array to an output stream created with clojure.java.io/output-stream.
@@ -59,5 +70,4 @@
   [x]
   (with-open [is (input-stream x)]
     (fress/read-object (fress/create-reader is :handlers (array-read-handlers)))))
-
 
