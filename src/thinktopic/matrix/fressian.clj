@@ -10,8 +10,8 @@
 (def array-writer
   (reify WriteHandler
     (write [_ writer array]
-      (let [shape (apply list (mat/shape array))
-            size (apply + shape)
+      (let [shape (mat/shape array)
+            size (apply * shape)
             dims (count shape)]
         ;; write the tag, shape vector, and values
         (.writeTag writer ARRAY-TAG (+ size 1))
@@ -19,24 +19,17 @@
         (doseq [d shape]
           (.writeLong writer d))
         (doseq [v (mat/eseq array)]
-          (.writeDouble writer v))))))
+          (.writeDouble writer v)))))
 
 ;; invoked by the "array" tag
 (def array-reader
   (reify ReadHandler
     (read [_ reader tag component-count]  ;; see org.fressian.Reader
-      (println "array-reader: " tag component-count)
-      (let [dims (int (.readObject reader))
-            _ (println "dims: " dims)
-            shape (doall (for [i (range dims)]
-                           (int (.readObject reader))))
-            _ (println "shape: " shape)
-            size (apply + shape)
-            _ (println "size: " size)
+      (let [shape (vec (.readObject reader))
+            size (apply * shape)
             array (mat/zero-array [size])]
         (loop [i 0]
           (when (< i size)
-            (println i)
             (mat/mset! array i (.readDouble reader))
             (recur (inc i))))
         (mat/reshape array shape)))))
@@ -70,4 +63,3 @@
   [x]
   (with-open [is (input-stream x)]
     (fress/read-object (fress/create-reader is :handlers (array-read-handlers)))))
-

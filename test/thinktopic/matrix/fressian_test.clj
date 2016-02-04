@@ -10,7 +10,7 @@
   (testing "Write array to bytes and read back."
     (let [os (ByteArrayOutputStream.)
           data {:info "some info about the data"
-                :data (mat/array [[1 2] [3 4]])}]
+                :data (mat/array [[1 2 4] [3 4 5]])}]
       (write-data os data mikera.arrayz.impl.AbstractArray)
       (is (= data
              (read-data (ByteArrayInputStream. (.toByteArray os))))))))

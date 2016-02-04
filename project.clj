@@ -5,10 +5,12 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.170"]
-                 [net.mikera/core.matrix "0.45.0"]
+                 [net.mikera/core.matrix "0.49.0"]
+                 [thi.ng/ndarray "0.3.0"]
                  [org.clojure/data.fressian "0.2.1"]
-                 [net.unit8/fressian-cljs "0.2.0"]
-                 [thi.ng/ndarray "0.3.0"]]
+                 [net.unit8/fressian-cljs "0.2.0"]]
+
+  :profiles {:dev {:dependencies [[net.mikera/vectorz-clj "0.37.0"]]}}
 
   :lein-release {:deploy-via :clojars}
 )
