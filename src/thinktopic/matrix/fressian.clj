@@ -11,15 +11,13 @@
   (reify WriteHandler
     (write [_ writer array]
       (let [shape (mat/shape array)
-            size (apply * shape)
-            dims (count shape)]
+            size (apply * shape)]
         ;; write the tag, shape vector, and values
-        (.writeTag writer ARRAY-TAG (+ size 1))
-        (.writeObject writer dims)
-        (doseq [d shape]
-          (.writeLong writer d))
+        (println "writing array: " ARRAY-TAG shape)
+        (.writeTag writer ARRAY-TAG (inc size))
+        (.writeObject writer shape)
         (doseq [v (mat/eseq array)]
-          (.writeDouble writer v)))))
+          (.writeDouble writer v))))))
 
 ;; invoked by the "array" tag
 (def array-reader
@@ -47,6 +45,8 @@
     (merge fress/clojure-read-handlers
            {ARRAY-TAG array-reader})))
 
+;; TODO: ideally we don't need to pass in a concrete array-type, as this will
+;; work for any core.matrix implementation.
 (defn write-data
   "Writes the array to an output stream created with clojure.java.io/output-stream.
 

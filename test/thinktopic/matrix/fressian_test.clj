@@ -1,7 +1,7 @@
 (ns thinktopic.matrix.fressian-test
   (:require [clojure.test :refer :all]
             [clojure.core.matrix :as mat]
-            [thinktopic.matrix.fressian :refer :all])
+            [thinktopic.matrix.fressian :refer mf])
   (:import [java.io ByteArrayOutputStream ByteArrayInputStream]))
 
 (mat/set-current-implementation :vectorz)
@@ -11,6 +11,6 @@
     (let [os (ByteArrayOutputStream.)
           data {:info "some info about the data"
                 :data (mat/array [[1 2 4] [3 4 5]])}]
-      (write-data os data mikera.arrayz.impl.AbstractArray)
+      (mf/write-data os data mikera.arrayz.impl.AbstractArray)
       (is (= data
-             (read-data (ByteArrayInputStream. (.toByteArray os))))))))
+             (mf/read-data (ByteArrayInputStream. (.toByteArray os))))))))
