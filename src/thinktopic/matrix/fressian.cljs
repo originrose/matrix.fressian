@@ -3,7 +3,7 @@
             [fressian-cljs.core :as fressian]
             [fressian-cljs.reader :as freader]
             [fressian-cljs.writer :as fwriter]
-            [thi.ng.ndarray.core]))
+            [thinktopic.aljabr.core]))
 
 (enable-console-print!)
 
@@ -30,10 +30,10 @@
 ; - :float32 :float64
 ; Each type gets 4 type definitions.
 (def WRITE-HANDLERS
- {thi.ng.ndarray.core/NDArray1float64 {ARRAY-TAG array-write-handler}
-  thi.ng.ndarray.core/NDArray2float64 {ARRAY-TAG array-write-handler}
-  thi.ng.ndarray.core/NDArray3float64 {ARRAY-TAG array-write-handler}
-  thi.ng.ndarray.core/NDArray4float64 {ARRAY-TAG array-write-handler}})
+ {thinktopic.aljabr.core/NDArray1float64 {ARRAY-TAG array-write-handler}
+  thinktopic.aljabr.core/NDArray2float64 {ARRAY-TAG array-write-handler}
+  thinktopic.aljabr.core/NDArray3float64 {ARRAY-TAG array-write-handler}
+  thinktopic.aljabr.core/NDArray4float64 {ARRAY-TAG array-write-handler}})
 
 (def READ-HANDLERS
   {ARRAY-TAG array-read-handler})
