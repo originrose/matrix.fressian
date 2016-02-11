@@ -12,8 +12,6 @@
     (write [_ writer array]
       (let [shape (mat/shape array)
             size (apply * shape)]
-        ;; write the tag, shape vector, and values
-        (println "writing array: " ARRAY-TAG shape)
         (.writeTag writer ARRAY-TAG (inc size))
         (.writeObject writer shape)
         (doseq [v (mat/eseq array)]

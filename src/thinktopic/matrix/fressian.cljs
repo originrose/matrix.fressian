@@ -9,20 +9,19 @@
 
 (def ARRAY-TAG "array")
 
-(defn double-write-handler
+(defn array-write-handler
   [wtr o]
-  (println "writing double array")
-  (let [shape (apply list (mat/shape o))
-        size (apply + shape)
-        dims (count shape)]
-    (println "shape: " shape "size: " size "dims: " dims)
-    (fwriter/write-tag wtr "array" (+ size 1 dims))
-    (fwriter/write-int wtr dims)
-    (doseq [d shape]
-      (fwriter/write-int wtr d))
+  (let [shape (mat/shape o)
+        size (apply * shape)]
+    (fwriter/write-tag wtr "array" (inc size))
+    (fwriter/write-object wtr shape)
     (doseq [v (mat/eseq o)]
-      (println "writing: " v (type v))
       (fwriter/write-double wtr v))))
+
+(defn array-read-handler
+  [reader tag component-count]
+  (let [shape (freader/read-object reader)]
+    (mat/compute-matrix shape (fn [& _] (freader/read-double reader)))))
 
 ; All of the types supported by ndarray lib:
 ; - :generic
@@ -31,8 +30,10 @@
 ; - :float32 :float64
 ; Each type gets 4 type definitions.
 (def WRITE-HANDLERS
- {thi.ng.ndarray.core/NDArray1float64 {"array" double-write-handler}
-  thi.ng.ndarray.core/NDArray2float64 {"array" double-write-handler}
-  thi.ng.ndarray.core/NDArray3float64 {"array" double-write-handler}
-  thi.ng.ndarray.core/NDArray4float64 {"array" double-write-handler}})
+ {thi.ng.ndarray.core/NDArray1float64 {ARRAY-TAG array-write-handler}
+  thi.ng.ndarray.core/NDArray2float64 {ARRAY-TAG array-write-handler}
+  thi.ng.ndarray.core/NDArray3float64 {ARRAY-TAG array-write-handler}
+  thi.ng.ndarray.core/NDArray4float64 {ARRAY-TAG array-write-handler}})
 
+(def READ-HANDLERS
+  {ARRAY-TAG array-read-handler})
