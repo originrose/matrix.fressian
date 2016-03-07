@@ -1,4 +1,4 @@
-(defproject thinktopic/matrix.fressian "0.3.0-SNAPSHOT"
+(defproject thinktopic/matrix.fressian "0.3.0"
   :description "Adds Fressian support for core.matrix."
   :url "http://github.com/rosejn/matrix.fressian"
   :license {:name "Eclipse Public License"
