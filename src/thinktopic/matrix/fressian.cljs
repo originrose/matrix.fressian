@@ -5,8 +5,6 @@
             [fressian-cljs.writer :as fwriter]
             [thinktopic.aljabr.core :as aljabr]))
 
-(enable-console-print!)
-
 (def ARRAY-TAG "array")
 
 (defn array-write-handler
@@ -21,18 +19,13 @@
 (defn array-read-handler
   [reader tag component-count]
   (let [shape (freader/read-object reader)
+        size (apply * shape)
         ary (mat/new-array shape)
         data (aljabr/data ary)]
-    (dotimes [i (apply * shape)]
+    (dotimes [i size]
       (aset data i (freader/read-double reader)))
     ary))
 
-; All of the types supported by ndarray lib:
-; - :generic
-; - :uint8 :uint8-clamped :uint16 :uint32
-; - :int8 :int16 :int32
-; - :float32 :float64
-; Each type gets 4 type definitions.
 (def WRITE-HANDLERS
  {thinktopic.aljabr.core/NDArray1float64 {ARRAY-TAG array-write-handler}
   thinktopic.aljabr.core/NDArray2float64 {ARRAY-TAG array-write-handler}
