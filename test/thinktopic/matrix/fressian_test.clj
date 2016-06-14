@@ -1,7 +1,7 @@
 (ns thinktopic.matrix.fressian-test
   (:require [clojure.test :refer :all]
             [clojure.core.matrix :as mat]
-            [thinktopic.matrix.fressian :refer mf])
+            [thinktopic.matrix.fressian :as mf])
   (:import [java.io ByteArrayOutputStream ByteArrayInputStream]))
 
 (mat/set-current-implementation :vectorz)

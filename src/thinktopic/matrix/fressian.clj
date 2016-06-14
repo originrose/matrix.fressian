@@ -6,6 +6,14 @@
 
 (def ARRAY-TAG "array")
 
+;; Debug Helpers
+(defn array->hex
+  [arr]
+  (map #(format "0x%x" %) arr))
+
+(defn print-buf [b]
+  (apply println (array->hex (.array b))))
+
 ;; tags the array and writes a shape header before all the values
 (def array-writer
   (reify WriteHandler
@@ -61,3 +69,6 @@
   [x]
   (with-open [is (input-stream x)]
     (fress/read-object (fress/create-reader is :handlers (array-read-handlers)))))
+
+(mat/set-current-implementation :vectorz)
+

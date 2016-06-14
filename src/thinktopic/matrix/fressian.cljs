@@ -3,7 +3,7 @@
             [fressian-cljs.core :as fressian]
             [fressian-cljs.reader :as freader]
             [fressian-cljs.writer :as fwriter]
-            [thinktopic.aljabr.core]))
+            [thinktopic.aljabr.core :as aljabr]))
 
 (enable-console-print!)
 
@@ -20,8 +20,12 @@
 
 (defn array-read-handler
   [reader tag component-count]
-  (let [shape (freader/read-object reader)]
-    (mat/compute-matrix shape (fn [& _] (freader/read-double reader)))))
+  (let [shape (freader/read-object reader)
+        ary (mat/new-array shape)
+        data (aljabr/data ary)]
+    (dotimes [i (apply * shape)]
+      (aset data i (freader/read-double reader)))
+    ary))
 
 ; All of the types supported by ndarray lib:
 ; - :generic
